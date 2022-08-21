@@ -1,6 +1,11 @@
 package resources;
 
 public enum KeysProperties {
+    UP,
+    DOWN,
+    LEFT,
+    RIGHT,
+
     GAME,
     FIELD,
     HEIGHT,
@@ -27,6 +32,5 @@ public enum KeysProperties {
     BUFFALO,
     DUCK,
     CATERPILLAR,
-    PLANT,
     HERB
 }
