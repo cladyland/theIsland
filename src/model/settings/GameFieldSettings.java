@@ -7,19 +7,19 @@ import static resources.KeysProperties.FIELD;
 import static resources.KeysProperties.GAME;
 
 public class GameFieldSettings {
-    private static int HEIGHT;
-    private static int WIDTH;
+    private final int HEIGHT;
+    private final int WIDTH;
 
-    private GameFieldSettings(){
+    GameFieldSettings() {
         HEIGHT = Integer.parseInt(FindAppProperties.getAppProperty(GAME, FIELD, KeysProperties.HEIGHT));
         WIDTH = Integer.parseInt(FindAppProperties.getAppProperty(GAME, FIELD, KeysProperties.WIDTH));
     }
 
-    public static int getHeight() {
+    public int getHeight() {
         return HEIGHT;
     }
 
-    public static int getWidth() {
+    public int getWidth() {
         return WIDTH;
     }
 
