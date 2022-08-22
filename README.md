@@ -17,15 +17,20 @@ P.S. поскольку мой код может выбросить Exception п
 Пример вывода программы при заданной ширине и высоте 2:
 
 - для пользователя:
-`🌊 🌊 🌊 🌊
-🌊 🌿 🌿 🌊
-🌊 🌿 🌿 🌊
-🌊 🌊 🌊 🌊`
 
+```
+🌊 🌊 🌊 🌊
+🌊 🌿 🌿 🌊		
+🌊 🌿 🌿 🌊		
+🌊 🌊 🌊 🌊
+```
 - для разработчика:
-`true true true true
+
+```
+true true true true
 true {WOLF=[model.predator.Wolf@7ef20235], FOX=[model.predator.Fox@27d6c5e0]} {WOLF=[model.predator.Wolf@4f3f5b24], FOX=[model.predator.Fox@15aeb7ab]} true
 true {WOLF=[model.predator.Wolf@7b23ec81], FOX=[model.predator.Fox@6acbcfc0]} {WOLF=[model.predator.Wolf@5f184fc6], FOX=[model.predator.Fox@3feba861]} true
-true true true true`
+true true true true
+```
   
 P.P.S. Хорошего и спокойного вам дня :)
