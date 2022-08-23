@@ -1,7 +1,15 @@
 package model.abstraction;
 
+import lombok.Getter;
+import lombok.Setter;
+
 public abstract class BasicItem {
+    @Getter
+    @Setter
     private int x;
+
+    @Getter
+    @Setter
     private int y;
 
     public BasicItem(int y, int x) {
@@ -9,19 +17,4 @@ public abstract class BasicItem {
         this.x = x;
     }
 
-    public int getX() {
-        return x;
-    }
-
-    public void setX(int x) {
-        this.x = x;
-    }
-
-    public int getY() {
-        return y;
-    }
-
-    public void setY(int y) {
-        this.y = y;
-    }
 }

@@ -45,10 +45,9 @@ public class IslandRandom extends Random {
         };
     }
 
-    public int animalSpeed(String animalName){
-        KeysProperties name = KeysProperties.valueOf(animalName.toUpperCase());
+    public int animalSpeed(KeysProperties animalName){
         IslandRandom islandRandom = new IslandRandom();
-        int maxSpeed = Integer.parseInt(FindAppProperties.getAppProperty(name, MAX, SPEED));
+        int maxSpeed = Integer.parseInt(FindAppProperties.getAppProperty(animalName, MAX, SPEED));
         int speed = islandRandom.nextInt(maxSpeed);
         return speed + 1;
     }

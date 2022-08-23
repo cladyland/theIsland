@@ -5,8 +5,8 @@ import resources.KeysProperties;
 public abstract class Animal extends BasicItem implements Movable {
     protected final int MAX_SATURATION = 100;
     protected int saturation;
-    protected boolean isAlive;
-    protected boolean itMoved;
+    public boolean isAlive;
+    public boolean itMoved;
 
     public Animal(int y, int x) {
         super(y, x);

@@ -1,5 +1,6 @@
 package model.settings;
 
+import model.abstraction.Animal;
 import resources.KeysProperties;
 
 import java.util.ArrayList;
@@ -15,7 +16,8 @@ public class GameObject {
         area.remove((T) obj);
     }
 
-    public <T> ArrayList<T> getAreaListByKey(Map<KeysProperties, ArrayList<T>> areaMap, KeysProperties key) {
+    public ArrayList<? extends Animal> getAreaListByKey
+            (Map<KeysProperties, ArrayList<? extends Animal>> areaMap, KeysProperties key) {
         return areaMap.get(key);
     }
 }
