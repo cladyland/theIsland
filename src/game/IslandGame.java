@@ -12,12 +12,13 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import static resources.KeysProperties.COUNT;
+import static resources.KeysProperties.HERB;
 import static resources.KeysProperties.MAX;
-import static resources.KeysProperties.WOLF;
 
 public class IslandGame {
     @Getter
     private GameField gameField;
+    @Getter
     private GameObject gameObject;
     private IslandRandom RANDOM;
     private int x;
@@ -33,25 +34,44 @@ public class IslandGame {
         RANDOM = new IslandRandom();
     }
 
-    public void moveAnimal() {
+    public void moveAllAnimals() {
         for (y = 0; y < gameField.getISLAND_HEIGHT(); y++) {
             for (x = 0; x < gameField.getISLAND_WIDTH(); x++) {
-                ArrayList<? extends Animal> currentArea;
                 boolean isShallowWater = x == 0 || y == 0
                                          || x > gameField.getISLAND_WIDTH()
                                          || y > gameField.getISLAND_HEIGHT();
+
                 if (!isShallowWater) {
-                    currentArea = gameObject.getAreaListByKey(gameField.getCurrentAreaMap(y, x), WOLF);
+                    var currentAreaMap = gameField.getCurrentAreaMap(y, x);
+                    currentAreaMap
+                            .entrySet()
+                            .stream()
+                            .filter(entry -> !entry.getKey().equals(HERB))
+                            .map(Map.Entry::getValue)
+                            .iterator()
+                            .forEachRemaining(this::animalsToMove);
+
+                }
+
+/*                ArrayList<? extends Animal> currentArea;
+                if (!isShallowWater) {
+                    currentArea = gameObject.getAnimalAreaListByKey(gameField.getCurrentAreaMap(y, x), WOLF);
                     currentArea.forEach(animal -> {
                         moves(animal, WOLF);
                     });
                     currentArea.removeIf(animal -> animal.itMoved);
-                }
+                }*/
             }
         }
     }
 
-    private <T extends Animal> void moves(T animal, KeysProperties key) {
+    private void animalsToMove(ArrayList<? extends Animal> animals){
+        for (Animal animal : animals) {
+            moveAnimal(animal, animal.getClassKey());
+        }
+    }
+
+    private <T extends Animal> void moveAnimal(T animal, KeysProperties key) {
         animal.move(RANDOM.directionMovement(), RANDOM.animalSpeed(key));
         boolean canMove = animal.getX() > 0
                           && animal.getY() > 0

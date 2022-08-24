@@ -2,10 +2,6 @@ package model.settings;
 
 import lombok.Getter;
 import model.abstraction.Animal;
-import model.abstraction.BasicItem;
-import model.abstraction.Plant;
-import model.herb.Herb;
-import model.predator.Fox;
 import model.predator.Wolf;
 import resources.KeysProperties;
 import service.FindAppProperties;
@@ -50,28 +46,6 @@ public class GameField {
         initialized();
     }
 
-    public void test() {
-        printIsland();
-
-        var areaMap = getCurrentAreaMap(1, 1);
-        areaMap.get(WOLF).add(getNewAnimal());
-        var myArea = areaMap.get(WOLF);
-
-        System.out.println("Size of 2 3 map = " + areaMap.size());
-        System.out.println("Wolf size = " + areaMap.get(WOLF).size());
-        Wolf wolf = (Wolf) areaMap.get(WOLF).get(0);
-        wolf.move(RANDOM.directionMovement(), RANDOM.animalSpeed(WOLF));
-        var areaMap2 = getCurrentAreaMap(wolf.getY(), wolf.getX());
-        areaMap.get(WOLF).remove(wolf);
-        areaMap2.get(WOLF).add(addingWolf(wolf));
-
-        System.out.println("AFTER MOVING");
-        System.out.println("y = " + wolf.getY() + " x = " + wolf.getX());
-        System.out.println("WOLF " + areaMap.get(WOLF));
-
-        printIsland();
-    }
-
     public void printIsland() {
         for (Object[] objects : gameField) {
             for (Object object : objects) {
@@ -97,15 +71,6 @@ public class GameField {
                 }
             }
         }
-    }
-
-    public <T> T getNewAnimal() {
-        Wolf wolf = new Wolf(1, 1);
-        return (T) wolf;
-    }
-
-    public <T> T addingWolf(Wolf wolf) {
-        return (T) wolf;
     }
 
     @SuppressWarnings("unchecked")
