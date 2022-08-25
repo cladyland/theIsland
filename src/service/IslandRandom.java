@@ -1,36 +1,29 @@
 package service;
 
-import model.predator.Fox;
-import model.predator.Wolf;
+import model.settings.GameObject;
 import resources.KeysProperties;
+
 import java.util.ArrayList;
 import java.util.Random;
+
+import static resources.KeysProperties.COUNT;
+import static resources.KeysProperties.HERB;
 import static resources.KeysProperties.MAX;
 import static resources.KeysProperties.SPEED;
 
 public class IslandRandom extends Random {
+    private final GameObject gameObject;
+
+    public IslandRandom() {
+        gameObject = new GameObject();
+    }
 
     public <T> ArrayList<T> createInitialObjects(KeysProperties key, ArrayList<T> area, int y, int x) {
-        T t = switch (key) {
-            case WOLF -> (T) new Wolf(y, x);
-            //   case BOA -> new Boa();
-            case FOX -> (T) new Fox(y, x);
-/*            case BEAR -> new Bear();
-    case EAGLE -> new Eagle();
-    case HORSE -> new Horse();
-    case DEER -> new Deer();
-    case RABBIT -> new Rabbit();
-    case MOUSE -> new Mouse();
-    case GOAT -> new Goat();
-    case SHEEP -> new Sheep();
-    case BOAR -> new Boar();
-    case BUFFALO -> new Buffalo();
-    case DUCK -> new Duck();
-    case CATERPILLAR -> new Caterpillar();
-    case HERB -> new Herb();*/
-            default -> throw new IllegalStateException("Unexpected value: " + key);
-        };
-        area.add(0, t);
+        int initialNumberOfAnimals = randomNumberOfNewObjects(key);
+        while (initialNumberOfAnimals != 0) {
+            area.add(gameObject.createNewIslandObject(key, y, x));
+            initialNumberOfAnimals--;
+        }
         return area;
     }
 
@@ -45,10 +38,21 @@ public class IslandRandom extends Random {
         };
     }
 
-    public int animalSpeed(KeysProperties animalName){
-        IslandRandom islandRandom = new IslandRandom();
-        int maxSpeed = Integer.parseInt(FindAppProperties.getAppProperty(animalName, MAX, SPEED));
-        int speed = islandRandom.nextInt(maxSpeed);
+    public int animalSpeed(KeysProperties animalName) {
+        int maxSpeed = getIntPropertyKey(animalName, MAX, SPEED);
+        int speed = this.nextInt(maxSpeed);
         return speed + 1;
+    }
+
+    private int randomNumberOfNewObjects(KeysProperties key) {
+        if (key.equals(HERB)){
+            return getIntPropertyKey(HERB, MAX, COUNT);
+        }
+        int maxCountOfAnimal = getIntPropertyKey(key, MAX, COUNT);
+        return this.nextInt(maxCountOfAnimal / 2);
+    }
+
+    private int getIntPropertyKey(KeysProperties... keys){
+        return Integer.parseInt(FindAppProperties.getAppProperty(keys));
     }
 }

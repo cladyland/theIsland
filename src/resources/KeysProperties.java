@@ -16,6 +16,7 @@ public enum KeysProperties {
     COUNT,
     SPEED,
     SATURATION,
+    YOUNG,
 
     WOLF,
     BOA,
