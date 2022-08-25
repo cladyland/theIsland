@@ -9,7 +9,9 @@ import service.FindAppProperties;
 import service.IslandRandom;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static resources.KeysProperties.COUNT;
 import static resources.KeysProperties.HERB;
@@ -35,37 +37,39 @@ public class IslandGame {
     }
 
     public void moveAllAnimals() {
+        List<ArrayList<? extends Animal>> currentAreaMap;
         for (y = 0; y < gameField.getISLAND_HEIGHT(); y++) {
             for (x = 0; x < gameField.getISLAND_WIDTH(); x++) {
                 boolean isShallowWater = x == 0 || y == 0
                                          || x > gameField.getISLAND_WIDTH()
                                          || y > gameField.getISLAND_HEIGHT();
-
                 if (!isShallowWater) {
-                    var currentAreaMap = gameField.getCurrentAreaMap(y, x);
+                    currentAreaMap = getAnimalsAreaMap(gameField.getCurrentAreaMap(y, x));
                     currentAreaMap
-                            .entrySet()
                             .stream()
-                            .filter(entry -> !entry.getKey().equals(HERB))
-                            .map(Map.Entry::getValue)
                             .iterator()
                             .forEachRemaining(this::animalsToMove);
 
+                    currentAreaMap
+                            .stream()
+                            .iterator()
+                            .next()
+                            .removeIf(animal -> animal.itMoved);
                 }
-
-/*                ArrayList<? extends Animal> currentArea;
-                if (!isShallowWater) {
-                    currentArea = gameObject.getAnimalAreaListByKey(gameField.getCurrentAreaMap(y, x), WOLF);
-                    currentArea.forEach(animal -> {
-                        moves(animal, WOLF);
-                    });
-                    currentArea.removeIf(animal -> animal.itMoved);
-                }*/
             }
         }
     }
 
-    private void animalsToMove(ArrayList<? extends Animal> animals){
+    private List<ArrayList<? extends Animal>> getAnimalsAreaMap
+            (Map<KeysProperties, ArrayList<? extends Animal>> areaMap) {
+        return areaMap.entrySet()
+                .stream()
+                .filter(entry -> !entry.getKey().equals(HERB))
+                .map(Map.Entry::getValue)
+                .collect(Collectors.toList());
+    }
+
+    private void animalsToMove(ArrayList<? extends Animal> animals) {
         for (Animal animal : animals) {
             moveAnimal(animal, animal.getClassKey());
         }
