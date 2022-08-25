@@ -1,7 +1,8 @@
 package model.settings;
 
 import lombok.Getter;
-import model.abstraction.Animal;
+import model.herb.Herb;
+import model.predator.Fox;
 import model.predator.Wolf;
 import resources.KeysProperties;
 import service.FindAppProperties;
@@ -9,8 +10,11 @@ import service.IslandRandom;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
+import static resources.KeysProperties.HERB;
 import static resources.KeysProperties.WOLF;
 
 public class GameField {
@@ -74,8 +78,19 @@ public class GameField {
     }
 
     @SuppressWarnings("unchecked")
-    public Map<KeysProperties, ArrayList<? extends Animal>> getCurrentAreaMap(int y, int x) {
-        return (Map<KeysProperties, ArrayList<? extends Animal>>) gameField[y][x];
+    public Map<KeysProperties, ArrayList<?>> getCurrentAreaMap(int y, int x){
+        return (Map<KeysProperties, ArrayList<?>>) gameField[y][x];
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T>List<ArrayList<T>> getCurrentAnimalsArea(int y, int x) {
+        var result = (Map<KeysProperties, ArrayList<T>>) gameField[y][x];
+        return  result
+                .entrySet()
+                .stream()
+                .filter(entry -> !entry.getKey().equals(HERB))
+                .map(Map.Entry::getValue)
+                .collect(Collectors.toList());
     }
 
     private static class Area {
@@ -90,7 +105,7 @@ public class GameField {
             basicArea = new HashMap<>();
             basicArea.put(WOLF, new ArrayList<Wolf>());
             //      area.put(KeysProperties.BOA, new ArrayList<Boa>());
-        //    basicArea.put(KeysProperties.FOX, new ArrayList<Fox>());
+            basicArea.put(KeysProperties.FOX, new ArrayList<Fox>());
       /*  area.put(KeysProperties.BEAR, new ArrayList<Bear>());
         area.put(KeysProperties.EAGLE, new ArrayList<Eagle>());
         area.put(KeysProperties.HORSE, new ArrayList<Horse>());
@@ -103,7 +118,7 @@ public class GameField {
         area.put(KeysProperties.BUFFALO, new ArrayList<Buffalo>());
         area.put(KeysProperties.DUCK, new ArrayList<Duck>());
         area.put(KeysProperties.CATERPILLAR, new ArrayList<Caterpillar>());*/
-   //     basicPlant.put(KeysProperties.HERB, new ArrayList<Herb>());
+        basicArea.put(KeysProperties.HERB, new ArrayList<Herb>());
         }
     }
 }

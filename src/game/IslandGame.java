@@ -9,12 +9,11 @@ import service.FindAppProperties;
 import service.IslandRandom;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static resources.KeysProperties.COUNT;
-import static resources.KeysProperties.HERB;
 import static resources.KeysProperties.MAX;
 
 public class IslandGame {
@@ -44,7 +43,7 @@ public class IslandGame {
                                          || x > gameField.getISLAND_WIDTH()
                                          || y > gameField.getISLAND_HEIGHT();
                 if (!isShallowWater) {
-                    currentAreaMap = getAnimalsAreaMap(gameField.getCurrentAreaMap(y, x));
+                    currentAreaMap = Collections.unmodifiableList(gameField.getCurrentAnimalsArea(y, x));
                     currentAreaMap
                             .stream()
                             .iterator()
@@ -53,20 +52,11 @@ public class IslandGame {
                     currentAreaMap
                             .stream()
                             .iterator()
-                            .next()
-                            .removeIf(animal -> animal.itMoved);
+                            .forEachRemaining(animals -> animals
+                                    .removeIf(animal -> animal.itMoved));
                 }
             }
         }
-    }
-
-    private List<ArrayList<? extends Animal>> getAnimalsAreaMap
-            (Map<KeysProperties, ArrayList<? extends Animal>> areaMap) {
-        return areaMap.entrySet()
-                .stream()
-                .filter(entry -> !entry.getKey().equals(HERB))
-                .map(Map.Entry::getValue)
-                .collect(Collectors.toList());
     }
 
     private void animalsToMove(ArrayList<? extends Animal> animals) {
@@ -77,7 +67,8 @@ public class IslandGame {
 
     private <T extends Animal> void moveAnimal(T animal, KeysProperties key) {
         animal.move(RANDOM.directionMovement(), RANDOM.animalSpeed(key));
-        boolean canMove = animal.getX() > 0
+        boolean canMove = !animal.itMoved
+                          && animal.getX() > 0
                           && animal.getY() > 0
                           && animal.getX() < gameField.getISLAND_WIDTH()
                           && animal.getY() < gameField.getISLAND_HEIGHT();
@@ -93,7 +84,7 @@ public class IslandGame {
         }
     }
 
-    private <T extends Animal> Map<KeysProperties, ArrayList<? extends Animal>> getAnimalArea(T animal) {
+    private <T extends Animal> Map<KeysProperties, ArrayList<?>> getAnimalArea(T animal) {
         return gameField.getCurrentAreaMap(animal.getY(), animal.getX());
     }
 }

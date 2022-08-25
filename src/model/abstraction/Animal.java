@@ -10,6 +10,7 @@ public abstract class Animal extends BasicItem implements Movable {
 
     public Animal(int y, int x) {
         super(y, x);
+        isAlive = true;
         itMoved = false;
     }
 
