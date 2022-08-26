@@ -4,6 +4,7 @@ import lombok.Getter;
 import model.herb.Herb;
 import model.predator.Fox;
 import model.predator.Wolf;
+import resources.GameObjectName;
 import resources.KeysProperties;
 import service.FindAppProperties;
 import service.IslandRandom;
@@ -14,8 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static resources.KeysProperties.HERB;
-import static resources.KeysProperties.WOLF;
+import static resources.GameObjectName.HERB;
 
 public class GameField {
     @Getter
@@ -54,7 +54,7 @@ public class GameField {
         for (Object[] objects : gameField) {
             for (Object object : objects) {
                 if (object instanceof HashMap) {
-                    String emoja = FindAppProperties.getAppProperty(KeysProperties.HERB, KeysProperties.EMOJI);
+                    String emoja = FindAppProperties.getInstance().getAppProperty(GameObjectName.HERB, KeysProperties.EMOJI);
                     //   System.out.print(emoja + " ");
                     System.out.print(object + " ");
                 } else {
@@ -78,13 +78,13 @@ public class GameField {
     }
 
     @SuppressWarnings("unchecked")
-    public Map<KeysProperties, ArrayList<?>> getCurrentAreaMap(int y, int x){
-        return (Map<KeysProperties, ArrayList<?>>) gameField[y][x];
+    public Map<GameObjectName, ArrayList<?>> getCurrentAreaMap(int y, int x){
+        return (Map<GameObjectName, ArrayList<?>>) gameField[y][x];
     }
 
     @SuppressWarnings("unchecked")
     public <T>List<ArrayList<T>> getCurrentAnimalsArea(int y, int x) {
-        var result = (Map<KeysProperties, ArrayList<T>>) gameField[y][x];
+        var result = (Map<GameObjectName, ArrayList<T>>) gameField[y][x];
         return  result
                 .entrySet()
                 .stream()
@@ -94,18 +94,18 @@ public class GameField {
     }
 
     private static class Area {
-        private static Map<KeysProperties, ArrayList<?>> basicArea;
+        private static Map<GameObjectName, ArrayList<?>> basicArea;
 
-        public static Map<KeysProperties, ArrayList<?>> getBasicAreaMap() {
+        public static Map<GameObjectName, ArrayList<?>> getBasicAreaMap() {
             fillBasicAreaMap();
             return new HashMap<>(basicArea);
         }
 
         private static void fillBasicAreaMap() {
             basicArea = new HashMap<>();
-            basicArea.put(WOLF, new ArrayList<Wolf>());
+            basicArea.put(GameObjectName.WOLF, new ArrayList<Wolf>());
             //      area.put(KeysProperties.BOA, new ArrayList<Boa>());
-            basicArea.put(KeysProperties.FOX, new ArrayList<Fox>());
+            basicArea.put(GameObjectName.FOX, new ArrayList<Fox>());
       /*  area.put(KeysProperties.BEAR, new ArrayList<Bear>());
         area.put(KeysProperties.EAGLE, new ArrayList<Eagle>());
         area.put(KeysProperties.HORSE, new ArrayList<Horse>());
@@ -118,7 +118,7 @@ public class GameField {
         area.put(KeysProperties.BUFFALO, new ArrayList<Buffalo>());
         area.put(KeysProperties.DUCK, new ArrayList<Duck>());
         area.put(KeysProperties.CATERPILLAR, new ArrayList<Caterpillar>());*/
-        basicArea.put(KeysProperties.HERB, new ArrayList<Herb>());
+        basicArea.put(GameObjectName.HERB, new ArrayList<Herb>());
         }
     }
 }

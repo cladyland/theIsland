@@ -1,12 +1,12 @@
 package model.herb;
 
 import model.abstraction.Plant;
-import resources.KeysProperties;
+import resources.GameObjectName;
 
 public class Herb extends Plant {
 
     public Herb(int y, int x) {
         super(y, x);
-        classKey = KeysProperties.HERB;
+        classKey = GameObjectName.HERB;
     }
 }

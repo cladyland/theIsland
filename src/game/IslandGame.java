@@ -4,7 +4,7 @@ import lombok.Getter;
 import model.abstraction.Animal;
 import model.settings.GameField;
 import model.settings.GameObject;
-import resources.KeysProperties;
+import resources.GameObjectName;
 import service.FindAppProperties;
 import service.IslandRandom;
 
@@ -65,7 +65,7 @@ public class IslandGame {
         }
     }
 
-    private <T extends Animal> void moveAnimal(T animal, KeysProperties key) {
+    private <T extends Animal> void moveAnimal(T animal, GameObjectName key) {
         animal.move(RANDOM.directionMovement(), RANDOM.animalSpeed(key));
         boolean canMove = !animal.itMoved
                           && animal.getX() > 0
@@ -75,7 +75,7 @@ public class IslandGame {
 
         if (canMove) {
             var toArea = getAnimalArea(animal);
-            int maxCountOnArea = Integer.parseInt(FindAppProperties.getAppProperty(key, MAX, COUNT));
+            int maxCountOnArea = Integer.parseInt(FindAppProperties.getInstance().getAppProperty(key, MAX, COUNT));
             int currentCount = toArea.get(key).size();
             if (currentCount < maxCountOnArea) {
                 gameObject.addToArea(toArea.get(key), animal);
@@ -84,7 +84,7 @@ public class IslandGame {
         }
     }
 
-    private <T extends Animal> Map<KeysProperties, ArrayList<?>> getAnimalArea(T animal) {
+    private <T extends Animal> Map<GameObjectName, ArrayList<?>> getAnimalArea(T animal) {
         return gameField.getCurrentAreaMap(animal.getY(), animal.getX());
     }
 }

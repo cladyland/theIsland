@@ -1,58 +1,61 @@
 package service;
 
 import model.settings.GameObject;
+import resources.GameObjectName;
+import resources.MoveDirection;
 import resources.KeysProperties;
 
 import java.util.ArrayList;
 import java.util.Random;
 
+import static resources.GameObjectName.HERB;
 import static resources.KeysProperties.COUNT;
-import static resources.KeysProperties.HERB;
 import static resources.KeysProperties.MAX;
 import static resources.KeysProperties.SPEED;
 
-public class IslandRandom extends Random {
-    private final GameObject gameObject;
+public class IslandRandom {
+    private final GameObject GAME_OBJECT;
+    private final Random RANDOM;
 
     public IslandRandom() {
-        gameObject = new GameObject();
+        GAME_OBJECT = new GameObject();
+        RANDOM = new Random();
     }
 
-    public <T> ArrayList<T> createInitialObjects(KeysProperties key, ArrayList<T> area, int y, int x) {
+    public <T> ArrayList<T> createInitialObjects(GameObjectName key, ArrayList<T> area, int y, int x) {
         int initialNumberOfAnimals = randomNumberOfNewObjects(key);
         while (initialNumberOfAnimals != 0) {
-            area.add(gameObject.createNewIslandObject(key, y, x));
+            area.add(GAME_OBJECT.createNewIslandObject(key, y, x));
             initialNumberOfAnimals--;
         }
         return area;
     }
 
-    public KeysProperties directionMovement() {
-        IslandRandom islandRandom = new IslandRandom();
-        return switch (islandRandom.nextInt(4)) {
-            case 0 -> KeysProperties.UP;
-            case 1 -> KeysProperties.DOWN;
-            case 2 -> KeysProperties.LEFT;
-            case 3 -> KeysProperties.RIGHT;
+    public MoveDirection directionMovement() {
+        return switch (RANDOM.nextInt(4)) {
+            case 0 -> MoveDirection.UP;
+            case 1 -> MoveDirection.DOWN;
+            case 2 -> MoveDirection.LEFT;
+            case 3 -> MoveDirection.RIGHT;
             default -> null;
         };
     }
 
-    public int animalSpeed(KeysProperties animalName) {
+    public int animalSpeed(GameObjectName animalName) {
         int maxSpeed = getIntPropertyKey(animalName, MAX, SPEED);
-        int speed = this.nextInt(maxSpeed);
+        int speed = RANDOM.nextInt(maxSpeed);
         return speed + 1;
     }
 
-    private int randomNumberOfNewObjects(KeysProperties key) {
+    private int randomNumberOfNewObjects(GameObjectName key) {
         if (key.equals(HERB)){
             return getIntPropertyKey(HERB, MAX, COUNT);
         }
         int maxCountOfAnimal = getIntPropertyKey(key, MAX, COUNT);
-        return this.nextInt(maxCountOfAnimal / 2);
+        return RANDOM.nextInt(maxCountOfAnimal / 2);
     }
 
-    private int getIntPropertyKey(KeysProperties... keys){
-        return Integer.parseInt(FindAppProperties.getAppProperty(keys));
+    private int getIntPropertyKey(GameObjectName name, KeysProperties... keys){
+        return Integer.parseInt(FindAppProperties.getInstance().getAppProperty(name, keys));
     }
 }

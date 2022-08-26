@@ -2,7 +2,7 @@ package model.abstraction;
 
 import lombok.Getter;
 import lombok.Setter;
-import resources.KeysProperties;
+import resources.GameObjectName;
 
 public abstract class BasicItem {
     @Getter
@@ -14,7 +14,7 @@ public abstract class BasicItem {
     private int y;
 
     @Getter
-    protected KeysProperties classKey;
+    protected GameObjectName classKey;
 
     public BasicItem(int y, int x) {
         this.y = y;

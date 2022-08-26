@@ -1,41 +1,40 @@
 package service;
 
+import exceptions.FileProcessingException;
 import resources.KeysProperties;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Properties;
 
 public class FindAppProperties {
-    private static final Properties properties;
-    private static FileReader reader;
+    private final Properties properties;
 
-    static {
+    {
         properties = new Properties();
         String propertiesPath = "src/resources/app.properties";
         try {
-            reader = new FileReader(propertiesPath);
-        } catch (FileNotFoundException e) {
-            //TODO add normal exception
-            e.printStackTrace();
+            FileReader reader = new FileReader(propertiesPath);
+            properties.load(reader);
+        } catch (IOException ex) {
+            throw new FileProcessingException("Failed to read file: " + propertiesPath, ex);
         }
     }
 
     private FindAppProperties() {
     }
 
-    public static String getAppProperty(KeysProperties... keys) {
-        try {
-            properties.load(reader);
-        } catch (IOException e) {
-            //TODO add normal exception
-            e.printStackTrace();
-        }
-        return properties.getProperty(getPropertiesName(keys));
+    public static FindAppProperties getInstance(){
+        return InstanceHolder.instance;
     }
 
-    private static String getPropertiesName(KeysProperties... keys) {
+    public <E> String getAppProperty(E name, KeysProperties... keys) {
+        return properties.getProperty(getPropertiesName(name, keys));
+    }
+
+    private <E> String getPropertiesName(E name, KeysProperties... keys) {
         var propertiesName = new StringBuilder();
+        propertiesName.append(name).append(".");
+
         for (KeysProperties key : keys) {
             propertiesName.append(key);
             propertiesName.append(".");
@@ -46,5 +45,9 @@ public class FindAppProperties {
             propertiesName.deleteCharAt(lastPoint);
         }
         return propertiesName.toString().toLowerCase();
+    }
+
+    private static class InstanceHolder{
+        public static FindAppProperties instance = new FindAppProperties();
     }
 }

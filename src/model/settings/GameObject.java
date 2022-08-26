@@ -4,6 +4,7 @@ import model.abstraction.Animal;
 import model.herb.Herb;
 import model.predator.Fox;
 import model.predator.Wolf;
+import resources.GameObjectName;
 import resources.KeysProperties;
 
 import java.util.ArrayList;
@@ -12,11 +13,11 @@ import java.util.Map;
 @SuppressWarnings("unchecked")
 public class GameObject {
 
-    public <T> T createNewIslandObject(KeysProperties key, int y, int x) {
-        return switch (key) {
-            case WOLF -> (T) new Wolf(y, x);
+    public <T> T createNewIslandObject(GameObjectName objectName, int y, int x) {
+        return switch (objectName) {
+            case WOLF -> (T) new Wolf(y, x, false);
             //   case BOA -> new Boa();
-            case FOX -> (T) new Fox(y, x);
+            case FOX -> (T) new Fox(y, x, false);
 /*            case BEAR -> new Bear();
     case EAGLE -> new Eagle();
     case HORSE -> new Horse();
@@ -30,7 +31,7 @@ public class GameObject {
     case DUCK -> new Duck();
     case CATERPILLAR -> new Caterpillar();*/
             case HERB -> (T) new Herb(y, x);
-            default -> throw new IllegalStateException("Unexpected value: " + key);
+            default -> throw new IllegalStateException("Unexpected value: " + objectName);
         };
     }
 

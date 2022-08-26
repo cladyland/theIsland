@@ -1,11 +1,6 @@
 package resources;
 
 public enum KeysProperties {
-    UP,
-    DOWN,
-    LEFT,
-    RIGHT,
-
     GAME,
     FIELD,
     HEIGHT,
@@ -16,22 +11,5 @@ public enum KeysProperties {
     COUNT,
     SPEED,
     SATURATION,
-    YOUNG,
-
-    WOLF,
-    BOA,
-    FOX,
-    BEAR,
-    EAGLE,
-    HORSE,
-    DEER,
-    RABBIT,
-    MOUSE,
-    GOAT,
-    SHEEP,
-    BOAR,
-    BUFFALO,
-    DUCK,
-    CATERPILLAR,
-    HERB
+    YOUNG
 }

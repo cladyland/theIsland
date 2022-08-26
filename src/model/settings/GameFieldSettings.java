@@ -11,8 +11,8 @@ public class GameFieldSettings {
     private final int WIDTH;
 
     GameFieldSettings() {
-        HEIGHT = Integer.parseInt(FindAppProperties.getAppProperty(GAME, FIELD, KeysProperties.HEIGHT));
-        WIDTH = Integer.parseInt(FindAppProperties.getAppProperty(GAME, FIELD, KeysProperties.WIDTH));
+        HEIGHT = getProperty(GAME, FIELD, KeysProperties.HEIGHT);
+        WIDTH = getProperty(GAME, FIELD, KeysProperties.WIDTH);
     }
 
     public int getHeight() {
@@ -23,4 +23,7 @@ public class GameFieldSettings {
         return WIDTH;
     }
 
+    private int getProperty(KeysProperties... key) {
+        return Integer.parseInt(FindAppProperties.getInstance().getAppProperty(key));
+    }
 }

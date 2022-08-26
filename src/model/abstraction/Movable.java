@@ -1,7 +1,7 @@
 package model.abstraction;
 
-import resources.KeysProperties;
+import resources.MoveDirection;
 
 public interface Movable {
-    void move(KeysProperties direction, int speed);
+    void move(MoveDirection direction, int speed);
 }
