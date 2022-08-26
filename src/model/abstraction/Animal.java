@@ -3,8 +3,9 @@ package model.abstraction;
 import lombok.Getter;
 import lombok.Setter;
 import resources.MoveDirection;
+import service.IslandRandom;
 
-public abstract class Animal extends BasicItem implements Movable {
+public abstract class Animal extends BasicItem implements Movable, Reproducible {
     private final int MAX_SATURATION = 100;
     @Getter
     @Setter
@@ -12,12 +13,14 @@ public abstract class Animal extends BasicItem implements Movable {
     protected int saturation;
     public boolean isAlive;
     public boolean itMoved;
+    public boolean itParied;
 
     public Animal(int y, int x, boolean isYoung) {
         super(y, x);
         this.isYoung = isYoung;
         isAlive = true;
         itMoved = false;
+        itParied = false;
         saturation = MAX_SATURATION;
     }
 
@@ -29,5 +32,11 @@ public abstract class Animal extends BasicItem implements Movable {
             case LEFT -> setX(getX() - speed);
             case RIGHT -> setX(getX() + speed);
         }
+    }
+
+    @Override
+    public void reproduce() {
+        IslandRandom random = new IslandRandom();
+        itParied = random.toMate();
     }
 }

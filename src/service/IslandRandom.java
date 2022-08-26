@@ -1,6 +1,5 @@
 package service;
 
-import model.settings.GameObject;
 import resources.GameObjectName;
 import resources.MoveDirection;
 import resources.KeysProperties;
@@ -12,6 +11,7 @@ import static resources.GameObjectName.HERB;
 import static resources.KeysProperties.COUNT;
 import static resources.KeysProperties.MAX;
 import static resources.KeysProperties.SPEED;
+import static resources.KeysProperties.YOUNG;
 
 public class IslandRandom {
     private final GameObject GAME_OBJECT;
@@ -47,15 +47,24 @@ public class IslandRandom {
         return speed + 1;
     }
 
-    private int randomNumberOfNewObjects(GameObjectName key) {
-        if (key.equals(HERB)){
-            return getIntPropertyKey(HERB, MAX, COUNT);
-        }
-        int maxCountOfAnimal = getIntPropertyKey(key, MAX, COUNT);
-        return RANDOM.nextInt(maxCountOfAnimal / 2);
+    public boolean toMate() {
+        return RANDOM.nextBoolean();
     }
 
-    private int getIntPropertyKey(GameObjectName name, KeysProperties... keys){
+    public int probableNumberOfYoung(GameObjectName animalName) {
+        int maxYoung = getIntPropertyKey(animalName, MAX, YOUNG);
+        return RANDOM.nextInt(maxYoung);
+    }
+
+    private int randomNumberOfNewObjects(GameObjectName key) {
+        if (key.equals(HERB)) {
+            return getIntPropertyKey(HERB, MAX, COUNT);
+        }
+        int halfOfMaxAnimalCount = getIntPropertyKey(key, MAX, COUNT) / 2;
+        return RANDOM.nextInt(halfOfMaxAnimalCount);
+    }
+
+    private int getIntPropertyKey(GameObjectName name, KeysProperties... keys) {
         return Integer.parseInt(FindAppProperties.getInstance().getAppProperty(name, keys));
     }
 }

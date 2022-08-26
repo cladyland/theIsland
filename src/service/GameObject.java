@@ -1,4 +1,4 @@
-package model.settings;
+package service;
 
 import model.abstraction.Animal;
 import model.herb.Herb;
