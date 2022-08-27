@@ -25,7 +25,7 @@ public class IslandRandom {
     public <T> ArrayList<T> createInitialObjects(GameObjectName key, ArrayList<T> area, int y, int x) {
         int initialNumberOfAnimals = randomNumberOfNewObjects(key);
         while (initialNumberOfAnimals != 0) {
-            area.add(GAME_OBJECT.createNewIslandObject(key, y, x));
+            area.add(GAME_OBJECT.createNewIslandObject(key, y, x, false));
             initialNumberOfAnimals--;
         }
         return area;

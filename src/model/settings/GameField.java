@@ -24,6 +24,7 @@ public class GameField {
     private final int ISLAND_WIDTH;
     private final IslandRandom RANDOM;
     private Object[][] gameField;
+    private Object[][] embryosField;
     private int x;
     private int y;
 
@@ -48,6 +49,7 @@ public class GameField {
             }
         }
         initialized();
+        createEmbryosField();
     }
 
     public void printIsland() {
@@ -66,6 +68,43 @@ public class GameField {
         }
     }
 
+    public void printEmbryosMap() {
+        for (Object[] objects : embryosField) {
+            for (Object object : objects) {
+                if (object instanceof HashMap) {
+                    String emoja = FindAppProperties.getInstance().getAppProperty(GameObjectName.HERB, KeysProperties.EMOJI);
+                    //   System.out.print(emoja + " ");
+                    System.out.print(object + " ");
+                } else {
+                    //    System.out.print("\uD83C\uDF0A" + " ");
+                    System.out.print(object + " ");
+                }
+            }
+            System.out.println();
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public Map<GameObjectName, ArrayList<?>> getCurrentAreaMap(int y, int x) {
+        return (Map<GameObjectName, ArrayList<?>>) gameField[y][x];
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T> List<ArrayList<T>> getCurrentAnimalsArea(int y, int x) {
+        var result = (Map<GameObjectName, ArrayList<T>>) gameField[y][x];
+        return result
+                .entrySet()
+                .stream()
+                .filter(entry -> !entry.getKey().equals(HERB))
+                .map(Map.Entry::getValue)
+                .collect(Collectors.toList());
+    }
+
+    @SuppressWarnings("unchecked")
+    public HashMap<GameObjectName, Integer> getEmbryosAreaMap(int y, int x) {
+        return (HashMap<GameObjectName, Integer>) embryosField[y][x];
+    }
+
     private void initialized() {
         for (y = 0; y < gameField.length; y++) {
             for (x = 0; x < gameField[y].length; x++) {
@@ -77,20 +116,13 @@ public class GameField {
         }
     }
 
-    @SuppressWarnings("unchecked")
-    public Map<GameObjectName, ArrayList<?>> getCurrentAreaMap(int y, int x){
-        return (Map<GameObjectName, ArrayList<?>>) gameField[y][x];
-    }
-
-    @SuppressWarnings("unchecked")
-    public <T>List<ArrayList<T>> getCurrentAnimalsArea(int y, int x) {
-        var result = (Map<GameObjectName, ArrayList<T>>) gameField[y][x];
-        return  result
-                .entrySet()
-                .stream()
-                .filter(entry -> !entry.getKey().equals(HERB))
-                .map(Map.Entry::getValue)
-                .collect(Collectors.toList());
+    private void createEmbryosField() {
+        embryosField = new Object[getISLAND_HEIGHT()][getISLAND_WIDTH()];
+        for (int y = 0; y < embryosField.length; y++) {
+            for (int x = 0; x < embryosField[y].length; x++) {
+                embryosField[y][x] = new HashMap<GameObjectName, Integer>();
+            }
+        }
     }
 
     private static class Area {
@@ -118,7 +150,7 @@ public class GameField {
         area.put(KeysProperties.BUFFALO, new ArrayList<Buffalo>());
         area.put(KeysProperties.DUCK, new ArrayList<Duck>());
         area.put(KeysProperties.CATERPILLAR, new ArrayList<Caterpillar>());*/
-        basicArea.put(GameObjectName.HERB, new ArrayList<Herb>());
+            //    basicArea.put(GameObjectName.HERB, new ArrayList<Herb>());
         }
     }
 }

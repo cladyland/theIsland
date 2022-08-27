@@ -12,12 +12,11 @@ import java.util.Map;
 
 @SuppressWarnings("unchecked")
 public class GameObject {
-
-    public <T> T createNewIslandObject(GameObjectName objectName, int y, int x) {
+    public <T> T createNewIslandObject(GameObjectName objectName, int y, int x, boolean isYoung) {
         return switch (objectName) {
-            case WOLF -> (T) new Wolf(y, x, false);
+            case WOLF -> (T) new Wolf(y, x, isYoung);
             //   case BOA -> new Boa();
-            case FOX -> (T) new Fox(y, x, false);
+            case FOX -> (T) new Fox(y, x, isYoung);
 /*            case BEAR -> new Bear();
     case EAGLE -> new Eagle();
     case HORSE -> new Horse();
@@ -44,7 +43,10 @@ public class GameObject {
     }
 
     public ArrayList<? extends Animal> getAreaListByKey
-            (Map<KeysProperties, ArrayList<? extends Animal>> areaMap, KeysProperties key) {
+            (Map<KeysProperties, ArrayList<? extends Animal>> areaMap, GameObjectName key) {
         return areaMap.get(key);
+    }
+    public ArrayList<? extends Animal> convertListToAnimalList(ArrayList<?> areaMap) {
+        return (ArrayList<? extends Animal>) areaMap;
     }
 }
