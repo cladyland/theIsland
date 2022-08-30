@@ -2,7 +2,6 @@ package model.predator;
 
 import model.abstraction.Predator;
 import resources.GameObjectName;
-import resources.KeysProperties;
 
 public class Fox extends Predator {
 

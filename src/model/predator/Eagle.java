@@ -1,4 +1,12 @@
 package model.predator;
 
-public class Eagle {
+import model.abstraction.Predator;
+import resources.GameObjectName;
+
+public class Eagle extends Predator {
+
+    public Eagle(int y, int x, boolean isYoung) {
+        super(y, x, isYoung);
+        classKey = GameObjectName.EAGLE;
+    }
 }
