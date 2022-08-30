@@ -1,43 +1,58 @@
 package service;
 
+import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import exceptions.FileProcessingException;
+import lombok.Getter;
 import resources.GameObjectName;
 import resources.KeysProperties;
 
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.LinkedHashMap;
 import java.util.Properties;
 
 import static resources.KeysProperties.COUNT;
 import static resources.KeysProperties.MAX;
 
-public class FindAppProperties {
-    private final Properties properties;
+public class AppProperties {
+    @Getter
+    private LinkedHashMap<String, LinkedHashMap<String, Integer>> animalRation;
+    private final Properties PROPERTIES;
 
     {
-        properties = new Properties();
         String propertiesPath = "src/resources/app.properties";
+        PROPERTIES = new Properties();
         try {
             FileReader reader = new FileReader(propertiesPath);
-            properties.load(reader);
+            PROPERTIES.load(reader);
         } catch (IOException ex) {
             throw new FileProcessingException("Failed to read file: " + propertiesPath, ex);
         }
+
+        String rationPath = "src/resources/ration.yaml";
+        var rationFile = new File(rationPath);
+        var mapper = new YAMLMapper();
+        try {
+            animalRation = mapper.readValue(rationFile, LinkedHashMap.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    private FindAppProperties() {
+    private AppProperties() {
     }
 
-    public static FindAppProperties getInstance() {
+    public static AppProperties getInstance() {
         return InstanceHolder.instance;
     }
 
     public <E> String getAppProperty(E name, KeysProperties... keys) {
-        return properties.getProperty(getPropertiesName(name, keys));
+        return PROPERTIES.getProperty(getPropertiesName(name, keys));
     }
 
-    public <E> int getMaxCountOnArea(GameObjectName objectName) {
-        return Integer.parseInt(properties
+    public int getMaxCountOnArea(GameObjectName objectName) {
+        return Integer.parseInt(PROPERTIES
                 .getProperty(getPropertiesName(objectName, MAX, COUNT)));
     }
 
@@ -58,6 +73,6 @@ public class FindAppProperties {
     }
 
     private static class InstanceHolder {
-        public static FindAppProperties instance = new FindAppProperties();
+        public static AppProperties instance = new AppProperties();
     }
 }

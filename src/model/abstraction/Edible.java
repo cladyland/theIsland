@@ -1,5 +1,5 @@
 package model.abstraction;
 
 public interface Edible {
-    void eat(int amountOfFood);
+    void eat(double amountOfFood);
 }

@@ -1,7 +1,7 @@
 package model.settings;
 
 import resources.KeysProperties;
-import service.FindAppProperties;
+import service.AppProperties;
 
 import static resources.KeysProperties.FIELD;
 import static resources.KeysProperties.GAME;
@@ -24,6 +24,6 @@ public class GameFieldSettings {
     }
 
     private int getGameFieldProperty(KeysProperties key) {
-        return Integer.parseInt(FindAppProperties.getInstance().getAppProperty(GAME, FIELD, key));
+        return Integer.parseInt(AppProperties.getInstance().getAppProperty(GAME, FIELD, key));
     }
 }

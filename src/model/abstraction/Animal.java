@@ -3,14 +3,21 @@ package model.abstraction;
 import lombok.Getter;
 import lombok.Setter;
 import resources.MoveDirection;
+import service.AppProperties;
 import service.IslandRandom;
 
-public abstract class Animal extends BasicItem implements Movable, Reproducible {
-    private final int MAX_SATURATION = 100;
+import java.util.LinkedHashMap;
+
+import static resources.KeysProperties.MAX;
+import static resources.KeysProperties.SATURATION;
+
+public abstract class Animal extends BasicItem implements Edible, Movable, Reproducible {
     @Getter
     @Setter
     private boolean isYoung;
-    protected int saturation;
+    private double saturation;
+    @Getter
+    protected boolean isPredator;
     public boolean isAlive;
     public boolean itMoved;
     public boolean itParied;
@@ -21,7 +28,7 @@ public abstract class Animal extends BasicItem implements Movable, Reproducible 
         isAlive = true;
         itMoved = false;
         itParied = false;
-        saturation = MAX_SATURATION;
+        saturation = maxSaturation();
     }
 
     @Override
@@ -35,8 +42,31 @@ public abstract class Animal extends BasicItem implements Movable, Reproducible 
     }
 
     @Override
+    public void eat(double amountOfFood) {
+        if (saturation + amountOfFood <= maxSaturation()) {
+            this.saturation += amountOfFood;
+        } else {
+            this.saturation = maxSaturation();
+        }
+    }
+
+    @Override
     public void reproduce() {
         IslandRandom random = new IslandRandom();
         itParied = random.toMate();
     }
+
+    public double getSaturation() {
+        return saturation;
+    }
+
+    public LinkedHashMap<String, Integer> getRation(){
+        return AppProperties.getInstance().getAnimalRation().get(classKey.toString());
+    }
+
+    private double maxSaturation(){
+        return Double.parseDouble(AppProperties.getInstance()
+                .getAppProperty(classKey, MAX, SATURATION));
+    }
+
 }
