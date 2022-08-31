@@ -9,5 +9,4 @@ public class Fox extends Predator {
         super(y, x, isYoung);
         classKey = GameObjectName.FOX;
     }
-
 }

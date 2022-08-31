@@ -23,7 +23,7 @@ public class IslandRandom {
     }
 
     public <T> ArrayList<T> createInitialObjects(GameObjectName key, ArrayList<T> area, int y, int x) {
-        int initialNumberOfAnimals = randomNumberOfNewObjects(key);
+        int initialNumberOfAnimals = randomNumberOfInitialObjects(key);
         while (initialNumberOfAnimals != 0) {
             area.add(GAME_OBJECT.createNewIslandObject(key, y, x, false));
             initialNumberOfAnimals--;
@@ -32,7 +32,8 @@ public class IslandRandom {
     }
 
     public MoveDirection directionMovement() {
-        return switch (RANDOM.nextInt(4)) {
+        int numberOfDirections = 4;
+        return switch (RANDOM.nextInt(numberOfDirections)) {
             case 0 -> MoveDirection.UP;
             case 1 -> MoveDirection.DOWN;
             case 2 -> MoveDirection.LEFT;
@@ -47,6 +48,13 @@ public class IslandRandom {
         return speed + 1;
     }
 
+    public int selectObjectToEat(int menuSize) {
+        if (menuSize <= 0) {
+            return menuSize;
+        }
+        return RANDOM.nextInt(menuSize);
+    }
+
     public boolean toMate() {
         return RANDOM.nextBoolean();
     }
@@ -56,7 +64,7 @@ public class IslandRandom {
         return RANDOM.nextInt(maxYoung);
     }
 
-    private int randomNumberOfNewObjects(GameObjectName key) {
+    private int randomNumberOfInitialObjects(GameObjectName key) {
         if (key.equals(HERB)) {
             return getIntPropertyKey(HERB, MAX, COUNT);
         }
@@ -65,6 +73,6 @@ public class IslandRandom {
     }
 
     private int getIntPropertyKey(GameObjectName name, KeysProperties... keys) {
-        return Integer.parseInt(FindAppProperties.getInstance().getAppProperty(name, keys));
+        return Integer.parseInt(AppProperties.getInstance().getAppProperty(name, keys));
     }
 }

@@ -2,14 +2,28 @@ package model.settings;
 
 import lombok.Getter;
 import model.herb.Herb;
+import model.herbivorous.Boar;
+import model.herbivorous.Buffalo;
+import model.herbivorous.Caterpillar;
+import model.herbivorous.Deer;
+import model.herbivorous.Duck;
+import model.herbivorous.Goat;
+import model.herbivorous.Horse;
+import model.herbivorous.Mouse;
+import model.herbivorous.Rabbit;
+import model.herbivorous.Sheep;
+import model.predator.Bear;
+import model.predator.Boa;
+import model.predator.Eagle;
 import model.predator.Fox;
 import model.predator.Wolf;
 import resources.GameObjectName;
 import resources.KeysProperties;
-import service.FindAppProperties;
+import service.AppProperties;
 import service.IslandRandom;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,7 +70,7 @@ public class GameField {
         for (Object[] objects : gameField) {
             for (Object object : objects) {
                 if (object instanceof HashMap) {
-                    String emoja = FindAppProperties.getInstance().getAppProperty(GameObjectName.HERB, KeysProperties.EMOJI);
+                    String emoja = AppProperties.getInstance().getAppProperty(GameObjectName.HERB, KeysProperties.EMOJI);
                     //   System.out.print(emoja + " ");
                     System.out.print(object + " ");
                 } else {
@@ -72,7 +86,7 @@ public class GameField {
         for (Object[] objects : embryosField) {
             for (Object object : objects) {
                 if (object instanceof HashMap) {
-                    String emoja = FindAppProperties.getInstance().getAppProperty(GameObjectName.HERB, KeysProperties.EMOJI);
+                    String emoja = AppProperties.getInstance().getAppProperty(GameObjectName.HERB, KeysProperties.EMOJI);
                     //   System.out.print(emoja + " ");
                     System.out.print(object + " ");
                 } else {
@@ -96,6 +110,17 @@ public class GameField {
                 .entrySet()
                 .stream()
                 .filter(entry -> !entry.getKey().equals(HERB))
+                .map(Map.Entry::getValue)
+                .collect(Collectors.toList());
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<ArrayList<Herb>> getCurrentHerbsArea(int y, int x){
+        var result = (Map<GameObjectName, ArrayList<Herb>>) gameField[y][x];
+        return result
+                .entrySet()
+                .stream()
+                .filter(entry -> entry.getKey().equals(HERB))
                 .map(Map.Entry::getValue)
                 .collect(Collectors.toList());
     }
@@ -136,21 +161,21 @@ public class GameField {
         private static void fillBasicAreaMap() {
             basicArea = new HashMap<>();
             basicArea.put(GameObjectName.WOLF, new ArrayList<Wolf>());
-            //      area.put(KeysProperties.BOA, new ArrayList<Boa>());
+            basicArea.put(GameObjectName.BOA, new ArrayList<Boa>());
             basicArea.put(GameObjectName.FOX, new ArrayList<Fox>());
-      /*  area.put(KeysProperties.BEAR, new ArrayList<Bear>());
-        area.put(KeysProperties.EAGLE, new ArrayList<Eagle>());
-        area.put(KeysProperties.HORSE, new ArrayList<Horse>());
-        area.put(KeysProperties.DEER, new ArrayList<Deer>());
-        area.put(KeysProperties.RABBIT, new ArrayList<Rabbit>());
-        area.put(KeysProperties.MOUSE, new ArrayList<Mouse>());
-        area.put(KeysProperties.GOAT, new ArrayList<Goat>());
-        area.put(KeysProperties.SHEEP, new ArrayList<Sheep>());
-        area.put(KeysProperties.BOAR, new ArrayList<Boar>());
-        area.put(KeysProperties.BUFFALO, new ArrayList<Buffalo>());
-        area.put(KeysProperties.DUCK, new ArrayList<Duck>());
-        area.put(KeysProperties.CATERPILLAR, new ArrayList<Caterpillar>());*/
-            //    basicArea.put(GameObjectName.HERB, new ArrayList<Herb>());
+            basicArea.put(GameObjectName.BEAR, new ArrayList<Bear>());
+            basicArea.put(GameObjectName.EAGLE, new ArrayList<Eagle>());
+            basicArea.put(GameObjectName.HORSE, new ArrayList<Horse>());
+            basicArea.put(GameObjectName.DEER, new ArrayList<Deer>());
+            basicArea.put(GameObjectName.RABBIT, new ArrayList<Rabbit>());
+            basicArea.put(GameObjectName.MOUSE, new ArrayList<Mouse>());
+            basicArea.put(GameObjectName.GOAT, new ArrayList<Goat>());
+            basicArea.put(GameObjectName.SHEEP, new ArrayList<Sheep>());
+            basicArea.put(GameObjectName.BOAR, new ArrayList<Boar>());
+            basicArea.put(GameObjectName.BUFFALO, new ArrayList<Buffalo>());
+            basicArea.put(GameObjectName.DUCK, new ArrayList<Duck>());
+            basicArea.put(GameObjectName.CATERPILLAR, new ArrayList<Caterpillar>());
+            basicArea.put(GameObjectName.HERB, new ArrayList<Herb>());
         }
     }
 }

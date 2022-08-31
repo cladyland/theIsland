@@ -20,5 +20,4 @@ public abstract class BasicItem {
         this.y = y;
         this.x = x;
     }
-
 }

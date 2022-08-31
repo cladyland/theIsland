@@ -14,6 +14,7 @@ import java.util.Properties;
 
 import static resources.KeysProperties.COUNT;
 import static resources.KeysProperties.MAX;
+import static resources.KeysProperties.WEIGHT;
 
 public class AppProperties {
     @Getter
@@ -54,6 +55,10 @@ public class AppProperties {
     public int getMaxCountOnArea(GameObjectName objectName) {
         return Integer.parseInt(PROPERTIES
                 .getProperty(getPropertiesName(objectName, MAX, COUNT)));
+    }
+
+    public double getWeight(GameObjectName objectName) {
+        return Double.parseDouble(getAppProperty(objectName, WEIGHT));
     }
 
     private <E> String getPropertiesName(E name, KeysProperties... keys) {

@@ -9,5 +9,4 @@ public class Wolf extends Predator {
         super(y, x, isYoung);
         classKey = GameObjectName.WOLF;
     }
-
 }
