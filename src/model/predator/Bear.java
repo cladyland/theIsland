@@ -8,5 +8,6 @@ public class Bear extends Predator {
     public Bear(int y, int x, boolean isYoung) {
         super(y, x, isYoung);
         classKey = GameObjectName.BEAR;
+        saturation = maxSaturation();
     }
 }

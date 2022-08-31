@@ -8,5 +8,6 @@ public class Rabbit extends Herbivorous {
     public Rabbit(int y, int x, boolean isYoung) {
         super(y, x, isYoung);
         classKey = GameObjectName.RABBIT;
+        saturation = maxSaturation();
     }
 }

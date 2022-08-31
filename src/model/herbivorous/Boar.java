@@ -9,5 +9,6 @@ public class Boar extends Herbivorous implements AbleToHunt {
     public Boar(int y, int x, boolean isYoung) {
         super(y, x, isYoung);
         classKey = GameObjectName.BOAR;
+        saturation = maxSaturation();
     }
 }

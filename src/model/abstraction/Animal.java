@@ -15,9 +15,7 @@ public abstract class Animal extends BasicItem implements Edible, Movable, Repro
     @Getter
     @Setter
     private boolean isYoung;
-    private double saturation;
-    @Getter
-    protected boolean isPredator;
+    protected double saturation;
     public boolean isAlive;
     public boolean itMoved;
     public boolean itParied;
@@ -28,7 +26,6 @@ public abstract class Animal extends BasicItem implements Edible, Movable, Repro
         isAlive = true;
         itMoved = false;
         itParied = false;
-        saturation = maxSaturation();
     }
 
     @Override
@@ -39,6 +36,7 @@ public abstract class Animal extends BasicItem implements Edible, Movable, Repro
             case LEFT -> setX(getX() - speed);
             case RIGHT -> setX(getX() + speed);
         }
+        reduceSaturation();
     }
 
     @Override
@@ -54,19 +52,32 @@ public abstract class Animal extends BasicItem implements Edible, Movable, Repro
     public void reproduce() {
         IslandRandom random = new IslandRandom();
         itParied = random.toMate();
+        reduceSaturation();
     }
 
-    public double getSaturation() {
-        return saturation;
+    public void reduceSaturation() {
+        double tenPercent = saturation * 0.1;
+        saturation -= tenPercent;
+        if (saturation <= 0 && maxSaturation() != 0) {
+            isAlive = false;
+        }
     }
 
-    public LinkedHashMap<String, Integer> getRation(){
+    public String getSaturation() {
+        int maxSaturationPercent = 100;
+        double currentSaturation = 0;
+        if (maxSaturation() != 0){
+            currentSaturation = saturation * maxSaturationPercent / maxSaturation();
+        }
+        return currentSaturation + "%";
+    }
+
+    public LinkedHashMap<String, Integer> getRation() {
         return AppProperties.getInstance().getAnimalRation().get(classKey.toString());
     }
 
-    private double maxSaturation(){
+    protected double maxSaturation() {
         return Double.parseDouble(AppProperties.getInstance()
                 .getAppProperty(classKey, MAX, SATURATION));
     }
-
 }

@@ -1,20 +1,26 @@
 package game;
 
 import lombok.Getter;
+import model.abstraction.AbleToHunt;
 import model.abstraction.Animal;
+import model.herb.Herb;
 import model.settings.GameField;
 import resources.Action;
 import service.GameObject;
 import resources.GameObjectName;
-import service.FindAppProperties;
+import service.AppProperties;
 import service.IslandRandom;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static resources.GameObjectName.HERB;
+import static resources.KeysProperties.MAX;
+import static resources.KeysProperties.SPEED;
 
 public class IslandGame {
     @Getter
@@ -24,8 +30,9 @@ public class IslandGame {
     private IslandRandom RANDOM;
     private int x;
     private int y;
-    private List<ArrayList<? extends Animal>> currentAreaList;
     private Map<GameObjectName, ArrayList<?>> currentAreaMap;
+    private List<ArrayList<? extends Animal>> currentAreaAnimalList;
+    private List<ArrayList<Herb>> currentAreaHerbs;
 
     public IslandGame() {
     }
@@ -38,37 +45,44 @@ public class IslandGame {
     }
 
     public void chooseAction(Action action) {
-
         for (y = 0; y < gameField.getISLAND_HEIGHT(); y++) {
             for (x = 0; x < gameField.getISLAND_WIDTH(); x++) {
                 boolean isShallowWater = x == 0 || y == 0
                                          || x > gameField.getISLAND_WIDTH()
                                          || y > gameField.getISLAND_HEIGHT();
                 if (!isShallowWater) {
-                    currentAreaList = Collections.unmodifiableList(gameField.getCurrentAnimalsArea(y, x));
+                    currentAreaAnimalList = Collections.unmodifiableList(gameField.getCurrentAnimalsArea(y, x));
                     currentAreaMap = gameField.getCurrentAreaMap(y, x);
+                    currentAreaHerbs = gameField.getCurrentHerbsArea(y, x);
                     executeAction(action);
                 }
             }
         }
     }
 
+    public AtomicInteger sizeObject() {
+        AtomicInteger result = new AtomicInteger();
+        currentAreaMap
+                .forEach((key, value) -> result.addAndGet(value.size()));
+        return result;
+    }
+
     private void executeAction(Action action) {
         switch (action) {
             case MOVE_ALL_ANIMALS -> {
-                currentAreaList
+                currentAreaAnimalList
                         .stream()
                         .iterator()
                         .forEachRemaining(this::animalsToMove);
 
-                currentAreaList
+                currentAreaAnimalList
                         .stream()
                         .iterator()
                         .forEachRemaining(animals -> animals
                                 .removeIf(animal -> animal.itMoved));
             }
             case MATCH_ALL_ANIMALS -> {
-                currentAreaList
+                currentAreaAnimalList
                         .stream()
                         .iterator()
                         .forEachRemaining(animals -> animals.forEach(Animal::reproduce));
@@ -82,80 +96,29 @@ public class IslandGame {
                                 birth(key, value, gameObject
                                         .convertListToAnimalList(currentAreaMap.get(key))));
             }
-        }
-    }
-
-    private void findPairToReproduce(int y, int x) {
-        var areaMapEntry = gameField.getCurrentAreaMap(y, x).entrySet();
-        List<? extends Animal> animalsPairs;
-        int pairsNumber;
-
-        for (var entry : gameField.getCurrentAreaMap(y, x).entrySet()) {
-            if (!entry.getKey().equals(HERB)) {
-                animalsPairs = gameObject
-                        .convertListToAnimalList(entry.getValue())
+            case EATING_ALL_ANIMALS -> {
+                currentAreaAnimalList
                         .stream()
-                        .filter(animal -> animal.itParied)
-                        .toList();
+                        .iterator()
+                        .forEachRemaining(animals -> animals.forEach(this::eating));
 
-                if (animalsPairs.size() % 2 != 0) {
-                    animalsPairs.get(0).itParied = false;
-                }
-
-                pairsNumber = animalsPairs.size() / 2;
-                if (pairsNumber > 0) {
-                    System.out.println(entry.getKey() + " to Paried " + animalsPairs.size() +
-                                       "---------------- PAIRS = " + pairsNumber);
-
-                    matchAnimals(entry.getKey(), pairsNumber, y, x);
-                }
-
-                //------------------------
-                //    System.out.println("=============== waiting to be born : " + waitingToBeBorn.size());
+                utilize();
             }
         }
     }
 
-    private void matchAnimals(GameObjectName animalName, int pairsNumber, int y, int x) {
-        int totalEmbryosNumber = 0;
-        int embryosNumber;
-
-        while (pairsNumber > 0) {
-            embryosNumber = RANDOM.probableNumberOfYoung(animalName);
-            System.out.println("-------------- embryos of " + animalName + " = " + embryosNumber);
-            totalEmbryosNumber += embryosNumber;
-            pairsNumber--;
-        }
-
-        gameField
-                .getEmbryosAreaMap(y, x)
-                .put(animalName, totalEmbryosNumber);
-    }
-
-    private <T> void birth(GameObjectName animalName, int embryosNumber, ArrayList<T> parentArea) {
-        int animalsNumberWithYoung = parentArea.size() + embryosNumber;
-        if (!currentNumberLessThanMax(animalName, animalsNumberWithYoung)) {
-            embryosNumber = FindAppProperties.getInstance()
-                                    .getMaxCountOnArea(animalName) - parentArea.size();
-        }
-
-        System.out.println(animalName + " " + y + " " + x + " Number before birth = " + parentArea.size());
-
-        while (embryosNumber > 0) {
-            gameObject.addToArea(parentArea, gameObject.createNewIslandObject(animalName, y, x, true));
-            embryosNumber--;
-        }
-
-        System.out.println(animalName + " " + y + " " + x + " Number after birth = " + parentArea.size());
-    }
-
     private void animalsToMove(ArrayList<? extends Animal> animals) {
         for (Animal animal : animals) {
-            moveAnimal(animal, animal.getClassKey());
+            int maxAnimalSpeed = gameObject
+                    .convertPropertyToInt(AppProperties.getInstance()
+                            .getAppProperty(animal.getClassKey(), MAX, SPEED));
+            if (maxAnimalSpeed > 0) {
+                moveAnimal(animal, animal.getClassKey());
+            }
         }
     }
 
-    private <T extends Animal> void moveAnimal(T animal, GameObjectName animalName) {
+    private void moveAnimal(Animal animal, GameObjectName animalName) {
         animal.move(RANDOM.directionMovement(), RANDOM.animalSpeed(animalName));
         boolean canMove = !animal.itMoved
                           && animal.getX() > 0
@@ -174,8 +137,119 @@ public class IslandGame {
         }
     }
 
+    private void eating(Animal animal) {
+        System.out.println(animal + " saturation before eating = " + animal.getSaturation());
+        double receivedFood = findFood(animal.getRation(), animal);
+        animal.eat(receivedFood);
+        System.out.println(animal + " saturation after eating = " + animal.getSaturation());
+    }
+
+    private double findFood(LinkedHashMap<String, Integer> ration, Animal animal) {
+        double foodWeight = 0;
+        Object food = currentAreaMap
+                .entrySet()
+                .stream()
+                .filter(entry -> ration.containsKey(entry.getKey().toString().toLowerCase())
+                                 && entry.getValue().size() > 0)
+                .map(Map.Entry::getValue)
+                .map(foodMenu -> foodMenu.get(RANDOM.selectObjectToEat(foodMenu.size())))
+                .findAny()
+                .orElse(null);
+
+        if (food != null) {
+          foodWeight = eatFood(food.getClass(), food, animal);
+        }
+        return foodWeight;
+    }
+
+    private double eatFood(Class<?> foodClass, Object food, Animal animal) {
+        double foodWeight = 0;
+        if (Herb.class.equals(foodClass)) {
+            if (!((Herb) food).isEaten) {
+                var herb = (Herb) food;
+                foodWeight = AppProperties.getInstance().getWeight(herb.getClassKey());
+                herb.isEaten = true;
+            }
+        } else if (Animal.class.equals(foodClass) && ((Animal) food).isAlive) {
+            int eatingProbability;
+            var hunter = (AbleToHunt) animal;
+            var prey = (Animal) food;
+            eatingProbability = animal.getRation().get(prey.getClassKey().toString().toLowerCase());
+
+            boolean huntingSuccess = hunter.hunting(eatingProbability);
+            if (huntingSuccess) {
+                foodWeight = AppProperties.getInstance().getWeight(prey.getClassKey());
+                prey.isAlive = false;
+            }
+        }
+        return foodWeight;
+    }
+
+    private void utilize() {
+        currentAreaAnimalList
+                .stream()
+                .iterator()
+                .forEachRemaining(animals -> animals
+                        .removeIf(animal -> !animal.isAlive));
+
+        currentAreaHerbs
+                .stream()
+                .iterator()
+                .forEachRemaining(herbs -> herbs.removeIf(herb -> herb.isEaten));
+    }
+
+    private void findPairToReproduce(int y, int x) {
+        List<? extends Animal> animalsPairs;
+        int pairsNumber;
+
+        for (var entry : gameField.getCurrentAreaMap(y, x).entrySet()) {
+            if (!entry.getKey().equals(HERB)) {
+                animalsPairs = gameObject
+                        .convertListToAnimalList(entry.getValue())
+                        .stream()
+                        .filter(animal -> animal.itParied)
+                        .toList();
+
+                if (animalsPairs.size() % 2 != 0) {
+                    animalsPairs.get(0).itParied = false;
+                }
+                pairsNumber = animalsPairs.size() / 2;
+                if (pairsNumber > 0) {
+                    matchAnimals(entry.getKey(), pairsNumber, y, x);
+                }
+            }
+        }
+    }
+
+    private void matchAnimals(GameObjectName animalName, int pairsNumber, int y, int x) {
+        int totalEmbryosNumber = 0;
+        int embryosNumber;
+
+        while (pairsNumber > 0) {
+            embryosNumber = RANDOM.probableNumberOfYoung(animalName);
+            totalEmbryosNumber += embryosNumber;
+            pairsNumber--;
+        }
+
+        gameField
+                .getEmbryosAreaMap(y, x)
+                .put(animalName, totalEmbryosNumber);
+    }
+
+    private <T> void birth(GameObjectName animalName, int embryosNumber, ArrayList<T> parentArea) {
+        int animalsNumberWithYoung = parentArea.size() + embryosNumber;
+        if (!currentNumberLessThanMax(animalName, animalsNumberWithYoung)) {
+            embryosNumber = AppProperties.getInstance()
+                                    .getMaxCountOnArea(animalName) - parentArea.size();
+        }
+        while (embryosNumber > 0) {
+            gameObject.addToArea(parentArea, gameObject.createNewIslandObject(animalName, y, x, true));
+            embryosNumber--;
+        }
+    }
+
     private boolean currentNumberLessThanMax(GameObjectName objectName, int currentCount) {
-        int maxCountOnArea = FindAppProperties.getInstance().getMaxCountOnArea(objectName);
+        int maxCountOnArea = AppProperties.getInstance().getMaxCountOnArea(objectName);
         return currentCount < maxCountOnArea;
     }
 

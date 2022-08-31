@@ -8,5 +8,6 @@ public class Caterpillar extends Herbivorous {
     public Caterpillar(int y, int x, boolean isYoung) {
         super(y, x, isYoung);
         classKey = GameObjectName.CATERPILLAR;
+        saturation = maxSaturation();
     }
 }
