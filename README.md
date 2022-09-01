@@ -1,7 +1,7 @@
 #### theIsland
 My second project on JavaRush
 
-###Notice:
+### Notice:
 _This project is still under development, but you can already see the results of the program._
 
 Available functionality:
@@ -9,7 +9,7 @@ Available functionality:
 - animals can eat (hunt, if it's a predator or herbivore that eats other herbivores);
 - animals can reproduce.
 
-After launching the program, the array of the island will be displayed on the screen, as well as general statistics of changes in the number of animals and plants. For example:
+After running the code, the array of the island will be displayed on the screen, as well as general statistics of changes in the number of animals and plants. For example:
 ```
 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊 
 🌊 🐺 🐛 🐁 🐻 🦆 🐐 🌿 🌿 🐗 🐑 🌿 🌿 🦊 🦅 🐑 🐗 🦊 🐺 🐻 🦆 🐻 🐑 🐗 🐍 🦊 🐑 🦌 🌿 🌿 🌿 🌊 
