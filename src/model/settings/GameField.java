@@ -23,7 +23,6 @@ import service.AppProperties;
 import service.IslandRandom;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -104,23 +103,11 @@ public class GameField {
     }
 
     @SuppressWarnings("unchecked")
-    public <T> List<ArrayList<T>> getCurrentAnimalsArea(int y, int x) {
-        var result = (Map<GameObjectName, ArrayList<T>>) gameField[y][x];
-        return result
+    public <T, E> List<ArrayList<T>> getIslandObjectsAreaList(int y, int x, E objectName){
+        return ((Map<GameObjectName, ArrayList<T>>) gameField[y][x])
                 .entrySet()
                 .stream()
-                .filter(entry -> !entry.getKey().equals(HERB))
-                .map(Map.Entry::getValue)
-                .collect(Collectors.toList());
-    }
-
-    @SuppressWarnings("unchecked")
-    public List<ArrayList<Herb>> getCurrentHerbsArea(int y, int x){
-        var result = (Map<GameObjectName, ArrayList<Herb>>) gameField[y][x];
-        return result
-                .entrySet()
-                .stream()
-                .filter(entry -> entry.getKey().equals(HERB))
+                .filter(entry -> (objectName == HERB) == entry.getKey().equals(HERB))
                 .map(Map.Entry::getValue)
                 .collect(Collectors.toList());
     }
