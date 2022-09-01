@@ -18,10 +18,8 @@ import model.predator.Eagle;
 import model.predator.Fox;
 import model.predator.Wolf;
 import resources.GameObjectName;
-import resources.KeysProperties;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 @SuppressWarnings("unchecked")
 public class GameObject {
@@ -48,15 +46,6 @@ public class GameObject {
 
     public <T> void addToArea(ArrayList<T> area, Object obj) {
         area.add((T) obj);
-    }
-
-    public <T> void removeFromArea(ArrayList<T> area, Object obj) {
-        area.remove((T) obj);
-    }
-
-    public ArrayList<? extends Animal> getAreaListByKey
-            (Map<KeysProperties, ArrayList<? extends Animal>> areaMap, GameObjectName key) {
-        return areaMap.get(key);
     }
 
     public ArrayList<? extends Animal> convertListToAnimalList(ArrayList<?> areaMap) {
