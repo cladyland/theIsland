@@ -16,7 +16,6 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import static resources.GameObjectName.HERB;
 import static resources.KeysProperties.MAX;
@@ -31,7 +30,7 @@ public class IslandGame {
     private int x;
     private int y;
     private Map<GameObjectName, ArrayList<?>> currentAreaMap;
-    private List<ArrayList<? extends Animal>> currentAreaAnimalList;
+    private List<ArrayList<? extends Animal>> currentAreaAnimal;
     private List<ArrayList<Herb>> currentAreaHerbs;
 
     public IslandGame() {
@@ -51,38 +50,32 @@ public class IslandGame {
                                          || x > gameField.getISLAND_WIDTH()
                                          || y > gameField.getISLAND_HEIGHT();
                 if (!isShallowWater) {
-                    currentAreaAnimalList = Collections.unmodifiableList(gameField.getCurrentAnimalsArea(y, x));
                     currentAreaMap = gameField.getCurrentAreaMap(y, x);
-                    currentAreaHerbs = gameField.getCurrentHerbsArea(y, x);
+                    currentAreaAnimal = Collections
+                            .unmodifiableList(gameField.getIslandObjectsAreaList(y, x, "ANIMAL"));
+                    currentAreaHerbs = gameField.getIslandObjectsAreaList(y, x, HERB);
                     executeAction(action);
                 }
             }
         }
     }
 
-    public AtomicInteger sizeObject() {
-        AtomicInteger result = new AtomicInteger();
-        currentAreaMap
-                .forEach((key, value) -> result.addAndGet(value.size()));
-        return result;
-    }
-
     private void executeAction(Action action) {
         switch (action) {
             case MOVE_ALL_ANIMALS -> {
-                currentAreaAnimalList
+                currentAreaAnimal
                         .stream()
                         .iterator()
                         .forEachRemaining(this::animalsToMove);
 
-                currentAreaAnimalList
+                currentAreaAnimal
                         .stream()
                         .iterator()
                         .forEachRemaining(animals -> animals
                                 .removeIf(animal -> animal.itMoved));
             }
             case MATCH_ALL_ANIMALS -> {
-                currentAreaAnimalList
+                currentAreaAnimal
                         .stream()
                         .iterator()
                         .forEachRemaining(animals -> animals.forEach(Animal::reproduce));
@@ -97,7 +90,7 @@ public class IslandGame {
                                         .convertListToAnimalList(currentAreaMap.get(key))));
             }
             case EATING_ALL_ANIMALS -> {
-                currentAreaAnimalList
+                currentAreaAnimal
                         .stream()
                         .iterator()
                         .forEachRemaining(animals -> animals.forEach(this::eating));
@@ -138,10 +131,8 @@ public class IslandGame {
     }
 
     private void eating(Animal animal) {
-        System.out.println(animal + " saturation before eating = " + animal.getSaturation());
         double receivedFood = findFood(animal.getRation(), animal);
         animal.eat(receivedFood);
-        System.out.println(animal + " saturation after eating = " + animal.getSaturation());
     }
 
     private double findFood(LinkedHashMap<String, Integer> ration, Animal animal) {
@@ -157,36 +148,38 @@ public class IslandGame {
                 .orElse(null);
 
         if (food != null) {
-          foodWeight = eatFood(food.getClass(), food, animal);
+            foodWeight = eatFood(food.getClass(), food, animal);
         }
         return foodWeight;
     }
 
     private double eatFood(Class<?> foodClass, Object food, Animal animal) {
         double foodWeight = 0;
-        if (Herb.class.equals(foodClass)) {
+        if (AbleToHunt.class.isAssignableFrom(animal.getClass()) && !Herb.class.equals(foodClass)) {
+            if (((Animal) food).isAlive) {
+                int eatingProbability;
+                var hunter = (AbleToHunt) animal;
+                var prey = (Animal) food;
+                eatingProbability = animal.getRation().get(prey.getClassKey().toString().toLowerCase());
+
+                boolean huntingSuccess = hunter.hunting(eatingProbability);
+                if (huntingSuccess) {
+                    foodWeight = AppProperties.getInstance().getWeight(prey.getClassKey());
+                    prey.isAlive = false;
+                }
+            }
+        } else {
             if (!((Herb) food).isEaten) {
                 var herb = (Herb) food;
                 foodWeight = AppProperties.getInstance().getWeight(herb.getClassKey());
                 herb.isEaten = true;
-            }
-        } else if (Animal.class.equals(foodClass) && ((Animal) food).isAlive) {
-            int eatingProbability;
-            var hunter = (AbleToHunt) animal;
-            var prey = (Animal) food;
-            eatingProbability = animal.getRation().get(prey.getClassKey().toString().toLowerCase());
-
-            boolean huntingSuccess = hunter.hunting(eatingProbability);
-            if (huntingSuccess) {
-                foodWeight = AppProperties.getInstance().getWeight(prey.getClassKey());
-                prey.isAlive = false;
             }
         }
         return foodWeight;
     }
 
     private void utilize() {
-        currentAreaAnimalList
+        currentAreaAnimal
                 .stream()
                 .iterator()
                 .forEachRemaining(animals -> animals

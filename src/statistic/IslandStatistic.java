@@ -61,13 +61,6 @@ public class IslandStatistic {
                                                               entry.getValue().get(INITIAL_POPULATION)));
     }
 
-    private void countPopulation(GameObjectName objectName, int size) {
-        islandObjectsStatisticCache
-                .get(objectName)
-                .get(INITIAL_POPULATION)
-                .addAndGet(size);
-    }
-
     public void collectObjectsForStatistics() {
         for (int y = 0; y < gameField.getISLAND_HEIGHT(); y++) {
             for (int x = 0; x < gameField.getISLAND_WIDTH(); x++) {
@@ -95,6 +88,13 @@ public class IslandStatistic {
         for (var animal : animalsMapToStatistic.entrySet()) {
             System.out.println(animal.getKey() + " " + animal.getValue().size());
         }
+    }
+
+    private void countPopulation(GameObjectName objectName, int size) {
+        islandObjectsStatisticCache
+                .get(objectName)
+                .get(INITIAL_POPULATION)
+                .addAndGet(size);
     }
 
     private void addObjectsForAnalysis(GameObjectName objectName, List<?> currentArea) {

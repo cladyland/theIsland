@@ -18,8 +18,6 @@ import model.predator.Eagle;
 import model.predator.Fox;
 import model.predator.Wolf;
 import resources.GameObjectName;
-import resources.KeysProperties;
-import service.AppProperties;
 import service.IslandRandom;
 
 import java.util.ArrayList;
@@ -66,31 +64,14 @@ public class GameField {
     }
 
     public void printIsland() {
+        String waterEmoji = "\uD83C\uDF0A";
         for (Object[] objects : gameField) {
             for (Object object : objects) {
                 if (object instanceof HashMap) {
-                    String emoja = AppProperties.getInstance().getAppProperty(GameObjectName.HERB, KeysProperties.EMOJI);
-                    //   System.out.print(emoja + " ");
-                    System.out.print(object + " ");
+                    System.out.print(RANDOM.randomEmoji() + " ");
                 } else {
-                    //    System.out.print("\uD83C\uDF0A" + " ");
-                    System.out.print(object + " ");
-                }
-            }
-            System.out.println();
-        }
-    }
+                    System.out.print(waterEmoji + " ");
 
-    public void printEmbryosMap() {
-        for (Object[] objects : embryosField) {
-            for (Object object : objects) {
-                if (object instanceof HashMap) {
-                    String emoja = AppProperties.getInstance().getAppProperty(GameObjectName.HERB, KeysProperties.EMOJI);
-                    //   System.out.print(emoja + " ");
-                    System.out.print(object + " ");
-                } else {
-                    //    System.out.print("\uD83C\uDF0A" + " ");
-                    System.out.print(object + " ");
                 }
             }
             System.out.println();
@@ -103,7 +84,7 @@ public class GameField {
     }
 
     @SuppressWarnings("unchecked")
-    public <T, E> List<ArrayList<T>> getIslandObjectsAreaList(int y, int x, E objectName){
+    public <T, E> List<ArrayList<T>> getIslandObjectsAreaList(int y, int x, E objectName) {
         return ((Map<GameObjectName, ArrayList<T>>) gameField[y][x])
                 .entrySet()
                 .stream()
