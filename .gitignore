@@ -1,0 +1,8 @@
+# Compiled class file
+*.class
+
+# Package
+.idea
+out
+target
+/src/main/resources/META-INF/MANIFEST.MF

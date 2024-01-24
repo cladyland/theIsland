@@ -1,0 +1,60 @@
+WOLF:
+  horse: 10
+  deer: 15
+  rabbit: 60
+  mouse: 80
+  goat: 60
+  sheep: 70
+  boar: 15
+  buffalo: 10
+  duck: 40
+BOA:
+  fox: 15
+  rabbit: 20
+  mouse: 40
+  duck: 10
+FOX:
+  rabbit: 70
+  mouse: 90
+  duck: 60
+  caterpillar: 40
+BEAR:
+  boa: 80
+  horse: 40
+  deer: 80
+  rabbit: 80
+  mouse: 90
+  goat: 70
+  sheep: 70
+  boar: 50
+  buffalo: 20
+  duck: 10
+EAGLE:
+  fox: 10
+  rabbit: 90
+  mouse: 90
+  duck: 80
+HORSE:
+  herb: 100
+DEER:
+  herb: 100
+RABBIT:
+  herb: 100
+MOUSE:
+  caterpillar: 90
+  herb: 100
+GOAT:
+  herb: 100
+SHEEP:
+  herb: 100
+BOAR:
+  mouse: 50
+  caterpillar: 90
+  herb: 100
+BUFFALO:
+  herb: 100
+DUCK:
+  caterpillar: 90
+  herb: 100
+CATERPILLAR:
+  herb: 100
