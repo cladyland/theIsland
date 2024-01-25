@@ -1,7 +1,7 @@
 # The Island (2.0)
-***
+
 ## Description
-***
+
 The Island is a console game which works in a multithreaded environment.
 At the beginning of the game, the user determines the size of the island, after 
 which the object of the island, as well as the animals and plants on it, will be 
@@ -13,7 +13,7 @@ and reproduce.
 In the statistics menu you can view the general statistics of the island, the 
 number of all animals on the island by species and the difference in the number of 
 objects between the beginning of the game and the current day.
-*** 
+***
 ### Main packages and classes
 _start with src/main/java/vika/kovalenko/app/_
 * ```core``` - contains logic that ensures the functionality of the game
@@ -24,9 +24,9 @@ _start with src/main/java/vika/kovalenko/app/_
   * ```primary/game/GameManagerImp.java``` - the main gameplay management class
   * ```primary/manage/Dialog.java``` - user interaction class
 * ```statistic``` - island statistics management
-***
+
 ## Launch
-***
+
 1. download **build/theIsland-2.0.jar**
 2. open Windows Terminal
 3. enter next commands:
@@ -34,7 +34,6 @@ _start with src/main/java/vika/kovalenko/app/_
 * ```java -jar $ theIsland-2.0.jar```
 
 **(!) warning: the program is written for Windows 10, possible problems with work on other platforms**
-
 ***
 #### Note:
 > _I rewrote this project from scratch after completing JavaRash courses. Already 
